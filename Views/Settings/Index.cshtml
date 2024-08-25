@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Settings";
+}
+
+@model Checod_Africa.Models.Settings
+<!-- Add this script tag before your custom scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<h2>Application Settings</h2>
+
+
+@using (Html.BeginForm("SaveSettings", "Settings", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+        <span> <strong>Company Name:  </strong></span>
+        @Html.TextBoxFor(m => m.companyname, new { @class = "green-input" })
+    </div>
+    <div class="form-group">
+        <span> <strong>Paystack Secret Key:  </strong></span>
+        @Html.TextBoxFor(m => m.paystack_key, new { @class = "green-input" })
+        </div> 
+        <br />
+        <br />
+        <button type="button" class="main-button " onclick="addAllowanceRow()">Add Adjustment</button>
+        <br />
+        <br />
+
+
+        <div id="allowancesContainer">
+            @if (Model.allowances.Count != 0)
+            {
+                int i = 0;
+                foreach (var allowance in Model.allowances)
+                {
+                    <div class="row">
+                        <div class="allowanceRow">
+                            <div class="col-lg-5">
+                                <label>Adjustment</label>
+                                @Html.TextBox("allowances[" + i + "].Name", allowance.Key, new { @class = "green-input" })
+                            </div>
+                            <div class="col-lg-5">
+                                <label>Proportion</label>
+                                @Html.TextBox("allowances[" + i + "].Proportion", allowance.Value, new { @class = "green-input" })
+                                <button type="button" class="in-button-failure" onclick="removeAllowanceRow(this)">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                    i++;
+                }
+            }
+        </div>
+        <br />
+        <div>
+            <button type="button" class="main-button " id="submitButton">Save</button>
+        </div>
+        }
+
+        <div id="successModal" class="modal fade">
+            <div class="modal-dialog modal-confirm">
+                <div class="modal-content">
+                    <div class="modal-header flex-column">
+                        <div class="icon-box" style="border: 3px solid green;">
+                            <i style="color:green;" class="material-icons">&#xE876;</i>
+                        </div>
+                        <h4 class="modal-title w-100">Success</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Settings Saved Successfully</p>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script>
+        var allowanceIndex = @Model.allowances.Count;
+
+        function addAllowanceRow() {
+            var container = $("#allowancesContainer");
+
+            var newRow = `<div class="row">
+                            <div class="allowanceRow">
+                            <div class="col-lg-5" >
+                            <label>Adjustment</label>
+                            <input type="text" name="allowances[${allowanceIndex}].Name" class="green-input" />
+                            </div>
+                            <div class="col-lg-5" >
+                            <label>Proportion:</label>
+                            <input type="text" name="allowances[${allowanceIndex}].Proportion" class="green-input" />
+                             <button type="button" class="in-button-failure" onclick="removeAllowanceRow(this)">Remove</button>
+                            </div>
+                            </div>
+                          </div>`;
+            container.append(newRow);
+            allowanceIndex++; // Increment the index for the next allowance
+        }
+
+        function removeAllowanceRow(button) {
+            $(button).closest(".allowanceRow").remove();
+        }
+
+    // ... your existing code ...
+
+    $(document).ready(function () {
+        $("#submitButton").on("click", function () {
+            var form = $("form");
+            var formData = new FormData(form[0]);
+
+            $.ajax({
+                url: form.attr("action"),
+                method: form.attr("method"),
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    // Handle success response
+                    $("#successModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    alert("Form submission failed:", error);
+                }
+            });
+        });
+    });
+        </script>

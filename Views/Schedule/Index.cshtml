@@ -1,0 +1,372 @@
+﻿@model Checod_Africa.Models.schedule
+
+@{
+    ViewBag.Title = "Schedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@using (Html.BeginForm("Index", "Schedule", FormMethod.Post))
+{
+    <div class="row">
+        <div class="form-group">
+
+            <div class="col-md-3">
+                @Html.DropDownList("month", ViewBag.Months as SelectList, "Select Month", new { @class = "drop-down", @onchange = "store_month()" })
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("year", ViewBag.Years as SelectList, "Select Year", new { @class = "drop-down", @onchange = "store_year()" })
+            </div>
+
+        </div>
+    </div>
+
+    <br />
+
+
+
+    <div id="tableContainer">
+
+    </div>
+
+    @Html.Hidden("selectedMonth", Model.month, new { id = "selectedMonth" })
+
+    @Html.Hidden("selectedYear", Model.year, new { id = "selectedYear" })
+}
+
+<div id="detailsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="create-modal modal-dialog">
+        <div class="modal-content" style="height:100%; overflow-x:scroll;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="detailsModalLabel"></h3>
+            </div>
+            <div class="modal-body">
+                <div id="schoolDetails"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="successPay" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header flex-column">
+                <div class="icon-box" style="border: 3px solid green;">
+                    <i style="color:green;" class="material-icons">&#xE876;</i>
+                </div>
+                <h4 class="modal-title w-100">Success</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Salary Paid Successfully</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                
+            </div>
+        </div>
+    </div>
+</div>
+<div id="detailsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="detailsModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="schoolDetails"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <!-- Add jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <script>
+    var removedStaffIds = []; // Array to store the IDs of removed staff
+
+        function store_month() {
+            var selectElement = $('#month').val();
+
+            var hiddenField = $('#selectedMonth');
+
+
+                // Do something with the selected value
+            hiddenField.val(selectElement);
+
+            if ($('#selectedMonth').val() != "" && $('#selectedYear').val() != "") {
+                Get_Schedule();
+            }
+        }
+
+        function store_year() {
+            var selectElement = $('#year').val();
+
+            var hiddenField = $('#selectedYear');
+
+
+            // Do something with the selected value
+            hiddenField.val(selectElement);
+
+            if ($('#selectedMonth').val() != "Select Month" && $('#selectedYear').val() != "Select Year") {
+                Get_Schedule();
+            }
+
+        }
+
+                function comfirm(staff) {
+                    var mydata = {
+                        staff: staff,
+                        selectedMonth: $('#selectedMonth').val(),
+                        selectedYear: $('#selectedYear').val()
+                    }
+                    $.ajax({
+                        url: '@Url.Action("Comfirm", "Schedule")',
+                        type: 'POST',
+                        data: mydata,
+                        success: function (data) {
+                            // Parse the existing staff object into the _create partial view
+
+                            $('#comfirmPayment').html(data);
+                            $('#comfirmPayment').modal('show');
+                        }
+                    });
+
+                }
+    function openEditPopup(staff_id) {
+        // Logic to open the edit staff popup based on staffId (same as before)
+        $.ajax({
+            url: '/Schedule/CreatePopup/' + staff_id,
+            type: 'GET',
+            success: function (data) {
+                // Parse the existing staff object into the _create partial view
+                $('#detailsModalLabel').html("Edit Staff");
+                $('#schoolDetails').html(data);
+                $('#detailsModal').modal('show');
+            }
+        });
+        }
+
+        function Refresh_Schedule() {
+            var yourData = {
+                selectedMonth: $('#selectedMonth').val(),
+                selectedYear: $('#selectedYear').val()
+            };
+        // Combine the form data, removed staff IDs, month, and year
+        // and send the AJAX request to the server
+            $.ajax({
+                url: '@Url.Action("Refresh", "Schedule")',
+                type: 'POST',
+                data: yourData,
+                success: function (data) {
+
+                        $('#tableContainer').html(data);
+
+
+            },
+            error: function (xhr, status, error) {
+                // Handle the error response, if needed
+                alert(error);
+            }
+        });
+        }
+
+        function Edit_Staff(staff) {
+            var yourData = {
+                selectedMonth: $('#selectedMonth').val(),
+                selectedYear: $('#selectedYear').val(),
+                staff_id: staff
+            };
+        // Combine the form data, removed staff IDs, month, and year
+        // and send the AJAX request to the server
+            $.ajax({
+                url: '@Url.Action("Edit_Staff", "Schedule")',
+                type: 'POST',
+                data: yourData,
+                success: function (data) {
+
+                        $('#tableContainer').html(data);
+
+
+            },
+            error: function (xhr, status, error) {
+                // Handle the error response, if needed
+
+            }
+        });
+        }
+
+     function Get_Schedule() {
+
+
+            var yourData = {
+                selectedMonth: $('#selectedMonth').val(),
+                selectedYear: $('#selectedYear').val()
+            };
+        // Combine the form data, removed staff IDs, month, and year
+        // and send the AJAX request to the server
+            $.ajax({
+                url: '@Url.Action("Index", "Schedule")',
+                type: 'POST',
+                data: yourData,
+                success: function (data) {
+
+                        $('#tableContainer').html(data);
+
+
+            },
+            error: function (xhr, status, error) {
+                // Handle the error response, if needed
+                alert(data.message);
+            }
+        });
+    }
+        function onSubmitForm() {
+
+
+            var yourData = {
+                selectedMonth: $('#selectedMonth').val(),
+                selectedYear: $('#selectedYear').val()
+            };
+
+        // Combine the form data, removed staff IDs, month, and year
+        // and send the AJAX request to the server
+            $.ajax({
+                url: '@Url.Action("PaySalary", "Schedule")',
+                type: 'POST',
+                data: yourData,
+                dataType: "json",
+                success: function (result) {
+                    if (result.status == true) {
+
+                        $('#comfirmModal').modal('hide');
+
+
+                        $('#successPay').modal('show');
+                        // Hide the successDelete modal after a few seconds
+                        Get_Schedule();
+
+
+                    }
+                else {
+                        alert("Error in Transfer. " + result.message);
+                }
+                // Handle the success response, if needed
+
+            },
+            error: function (xhr, status, error) {
+                // Handle the error response, if needed
+                alert("Error occurred while paying salary");
+            }
+        });
+        }
+
+            function Resend_Mail() {
+
+
+        var yourData = {
+            selectedMonth: $('#selectedMonth').val(),
+            selectedYear: $('#selectedYear').val()
+        };
+
+    // Combine the form data, removed staff IDs, month, and year
+    // and send the AJAX request to the server
+        $.ajax({
+            url: '@Url.Action("Resend_Email", "Schedule")',
+            type: 'POST',
+            data: yourData,
+            dataType: "json",
+            success: function (result) {
+                if (result.status == true) {
+
+                    alert("Email Resent Successfully");
+
+
+                }
+            else {
+                    alert("Error sending mail. " + result.message);
+            }
+            // Handle the success response, if needed
+
+        },
+        error: function (xhr, status, error) {
+            // Handle the error response, if needed
+            alert("Error occurred while paying salary");
+        }
+    });
+        }
+
+        function Send_Email(eid) {
+
+
+                        var yourData = {
+            staff_id: eid,
+            selectedMonth: $('#selectedMonth').val(),
+            selectedYear: $('#selectedYear').val()
+        };
+
+    // Combine the form data, removed staff IDs, month, and year
+    // and send the AJAX request to the server
+        $.ajax({
+            url: '@Url.Action("Resend_Email", "Schedule")',
+            type: 'POST',
+            data: yourData,
+            dataType: "json",
+            success: function (result) {
+                if (result.status == true) {
+
+                    alert("Email Resent Successfully");
+
+
+                }
+            else {
+                    alert("Error sending mail. " + result.message);
+            }
+            // Handle the success response, if needed
+
+        },
+        error: function (xhr, status, error) {
+            // Handle the error response, if needed
+            alert("Error occurred while sending email");
+        }
+    });
+}
+
+
+    function onCheckboxChange(checkbox) {
+        var staffId = $(checkbox).data("staff-id");
+        var isChecked = checkbox.checked;
+
+        // Send the AJAX request with the staff ID and the checked property
+        $.ajax({
+            url: '@Url.Action("Change", "Schedule")', // Change to the appropriate action method URL
+            type: 'POST',
+            data: {
+                staffId: staffId,
+                 month: $('#selectedMonth').val(),
+                year: $('#selectedYear').val(),
+                isChecked: isChecked
+            },
+            success: function (result) {
+                // Handle the success response, if needed
+                $('#tableContainer').html(result);
+            },
+            error: function (xhr, status, error) {
+                // Handle the error response, if needed
+
+            }
+        });
+                }
+
+    </script>
+}
+

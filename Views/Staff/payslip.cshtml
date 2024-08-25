@@ -1,0 +1,142 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Add your CSS styling here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .payslip-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .company-logo {
+            max-width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            .table th, .table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+
+            .table th {
+                background-color: #f0f0f0;
+            }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .payment-details {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+</head>
+<body>
+    <div class="payslip-container">
+        <!-- Company logo and name -->
+        <div class="company-header">
+            <img src="company-logo.png" alt="Company Logo" class="company-logo">
+            <h2>Company Name</h2>
+        </div>
+
+        <!-- Payslip heading -->
+        <h3 class="payslip-heading">Payslip for </h3>
+
+        <!-- Employee information -->
+        <table class="table">
+            <tr>
+                <td><strong>Name:</strong> John Doe</td>
+                <td><strong>Employee Number:</strong> 12345</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Designation:</strong> Software Engineer</td>
+            </tr>
+        </table>
+
+        <!-- Earnings and Deductions table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="text-right">Earnings</th>
+                    <th class="text-right">Deductions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Basic Salary</td>
+                    <td class="text-right">$3000</td>
+                    <td></td>
+                </tr>
+                <!-- Add more rows for other allowances and deductions -->
+            </tbody>
+            <tfoot>
+                <tr class="bold">
+                    <td>Total Earnings</td>
+                    <td class="text-right">$3500</td>
+                    <td class="text-right">$500</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Payment details -->
+        <div class="payment-details">
+            <div>
+                <p><strong>Bank Account Name:</strong> John Doe</p>
+                <p><strong>Bank Account Number:</strong> 123456789</p>
+                <p><strong>Payment Date:</strong> August 25, 2023</p>
+                <p><strong>Reference:</strong> PS123456</p>
+            </div>
+            <div>
+                <p><strong>Net Salary:</strong></p>
+                <p class="text-right">$3000</p>
+                <p class="text-right"><em>Three Thousand Dollars</em></p>
+            </div>
+        </div>
+    </div>
+    <button id="export-pdf-button">Export to PDF</button>
+
+   
+    <script>
+        document.getElementById('export-pdf-button').addEventListener('click', function () {
+            // Create a new jsPDF instance
+            var doc = new jsPDF();
+
+            // Add content to the PDF
+            var payslipContent = document.getElementById('payslip-container');
+            doc.fromHTML(payslipContent, 15, 15, {
+                width: 180
+            });
+
+            // Save the PDF
+            doc.save('payslip.pdf');
+        });
+    </script>
+
+</body>
+</html>

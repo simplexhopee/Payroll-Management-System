@@ -1,0 +1,259 @@
+﻿@model Checod_Africa.Models.schedule
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://checod.digitalschooltech.com/Content/styles.css">
+    <title>Payroll Report</title>
+    <style>
+        /* Define styles for the report */
+        body {
+            color: rgb(147, 154, 164);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .header h1 {
+                margin: 0;
+            }
+
+        .logo {
+            width: 150px; /* Adjust the logo size as needed */
+            height: auto;
+        }
+
+        .table-container {
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid rgb(147, 154, 164);
+            padding: 8px;
+            text-align: left;
+        }
+      
+        thead {
+            color: white;
+            background-color: rgb(1,150,70);
+        }
+        tfoot {
+            color:#353537;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .print-button,
+        .export-button {
+            padding: 8px 20px;
+            margin: 0 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+   
+</head>
+<body>
+
+    <div class="header">
+        <img class="logo" src="https://checod.digitalschooltech.com/Content/img/logo-low.png" alt="Company Logo">
+        <h3>@Model.allsettings.companyname</h3>
+        <h2>Salary Schedule for @Model.month @Model.year </h2>
+    </div>
+    <div class="table-container">
+        @{
+            Dictionary<string, bool> fields = Model.checkfields ;
+            bool first = false;
+        }
+        <table>
+            <thead>
+                <tr>
+                    @if (fields["cstaff_id"] == true)
+                    {
+                        <th>Staff ID</th>
+                    }
+                    @if (fields["cstaff_name"] == true)
+                    {
+                        <th>Name</th>
+                    }
+                    @if (fields["cphone"] == true)
+                    {
+                        <th>Phone Number</th>
+                    }
+                    @if (fields["cemail"] == true)
+                    {
+                        <th>Email</th>
+                    }
+                    @if (fields["cdesignation"] == true)
+                    {
+                        <th>Designation</th>
+                    }
+                    @if (fields["ctin"] == true)
+                    {
+                        <th>TIN Number</th>
+                    }
+                    @if (fields["caccount_no"] == true)
+                    {
+                        <th>Account Number</th>
+                    }
+                    @if (fields["cbank"] == true)
+                    {
+                        <th>Bank</th>
+                    }
+                    @if (fields["csalary"] == true)
+                    {
+                        <th>Basic Salary</th>
+                    }
+                    <!-- Add columns for allowances -->
+                    @foreach (string allowance in Model.allsettings.allowances.Keys)
+                    {
+                        if (fields[allowance] == true)
+                        {
+                            <th>@allowance</th>
+                        }
+                    }
+                    @if (fields["cnet"] == true)
+                    {
+                        <th>Net Salary</th>
+                    }
+                </tr>
+            </thead>
+            <!-- Loop through staff data and populate the table -->
+            @foreach (Checod_Africa.Models.staff staff in Model.selected_staff)
+            {
+                <tr>
+                    @if (fields["cstaff_id"] == true)
+                    {
+                        <td>@staff.staff_id</td>
+                    }
+                    @if (fields["cstaff_name"] == true)
+                    {
+                        <td>@staff.staff_name</td>
+                    }
+                    @if (fields["cphone"] == true)
+                    {
+                        <td>@staff.phone</td>
+                    }
+                    @if (fields["cemail"] == true)
+                    {
+                        <td>@staff.email</td>
+                    }
+                    @if (fields["cdesignation"] == true)
+                    {
+                        <td>@staff.designation</td>
+                    }
+                    @if (fields["ctin"] == true)
+                    {
+                        <td>@staff.tin</td>
+                    }
+                    @if (fields["caccount_no"] == true)
+                    {
+                        <td>@staff.account_no</td>
+                    }
+                    @if (fields["cbank"] == true)
+                    {
+                        <td>@staff.bank</td>
+                    }
+                    @if (fields["csalary"] == true)
+                    {
+                        <td>@staff.salary.ToString("N2")</td>
+                    }
+                    <!-- Add cells for allowances -->
+                    @foreach (var allowance in Model.allsettings.allowances.Keys)
+                    {
+                        if (fields[allowance] == true)
+                        {
+                            <td>@(staff.allowances.ContainsKey(allowance) ? (staff.allowances[allowance] < 0 ? "(" + Math.Abs(staff.allowances[allowance]).ToString("N2") + ")" : staff.allowances[allowance].ToString("N2")) : "0.00")</td>
+                        }
+                    }
+                    @if (fields["cnet"] == true)
+                    {
+                        <td>@Model.net[staff.staff_id].ToString("N2")</td>
+                    }
+                </tr>
+            }
+            <tfoot>
+                <tr>
+                    @if (fields["cstaff_id"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["cstaff_name"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["cphone"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["cemail"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["cdesignation"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["ctin"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["caccount_no"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["cbank"] == true)
+                    {
+                        <th> @(first == false ? "Total" : "")</th>
+                        first = true;
+                    }
+                    @if (fields["csalary"] == true)
+                    {
+                        <th>@Model.gtotal_salary.ToString("N2")</th>
+                    }
+                    <!-- Add cells for total allowances -->
+                    @foreach (string allowance in Model.allsettings.allowances.Keys)
+                    {
+                        if (fields[allowance] == true)
+                        {
+                            <th>@(Model.totals[allowance] < 0 ? "(" + Math.Abs(Model.totals[allowance]).ToString("N2") + ")" : Model.totals[allowance].ToString("N2"))</th>
+                        }
+                    }
+                    @if (fields["cnet"] == true)
+                    {
+                        <th>@Model.gtotal_net.ToString("N2")</th>
+                    }
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+
+
+  
+</body>
+</html>
+

@@ -1,0 +1,194 @@
+﻿@model Checod_Africa.Models.schedule
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/styles.css">
+    <style>
+        /* Add your CSS styling here */
+       
+
+        .payslip-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .company-logo {
+            max-width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            .table th, .table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+
+            .table th {
+                background-color: rgb(1,150,70);
+                color: white;
+            }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .payment-details {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+        .table-borderless, .table-borderless th, .table-borderless td {
+            border: none;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+</head>
+<body>
+    <div class="payslip-container">
+        <!-- Company logo and name -->
+        <div class="company-header">
+            <img src="https://checod.digitalschooltech.com/Content/img/logo-low.png" alt="Company Logo" class="company-logo">
+            <h3>@Model.allsettings.companyname</h3>
+        </div>
+
+        <!-- Payslip heading -->
+        <h2 class="payslip-heading">Payslip for @Model.month @Model.year </h2>
+
+        <!-- Employee information -->
+        <table class="table">
+            <tr>
+                <td><strong>Name:</strong> @Model.selected_staff[0].staff_name</td>
+                <td><strong>Staff ID:</strong> @Model.selected_staff[0].staff_id</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Designation:</strong> @Model.selected_staff[0].designation  </td>
+            </tr>
+        </table>
+
+        <!-- Earnings and Deductions table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="text-right">Earnings</th>
+                    <th class="text-right">Deductions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Basic Salary</td>
+                    <td class="text-right">@Model.selected_staff[0].salary.ToString("N2")  </td>
+                    <td></td>
+                </tr>
+                @{
+                    double pos = Model.selected_staff[0].salary;
+                    double neg = 0;
+                    if (Model.allsettings.allowances.Keys != null)
+                    {
+                        foreach (string allowance in Model.allsettings.allowances.Keys)
+                        {
+                                <tr>
+                                    <td>@allowance</td>
+                                    @{
+                                        if (Model.selected_staff[0].allowances[allowance] > 0)
+                                        {
+                                            pos += Model.selected_staff[0].allowances[allowance];
+                                            <td>@Model.selected_staff[0].allowances[allowance].ToString("N2")</td>
+                                            <td></td>
+
+
+                                        }
+                                        else
+                                        {
+                                            neg -= Model.selected_staff[0].allowances[allowance];
+                                            <td></td>
+                                            <td>@Math.Abs(Model.selected_staff[0].allowances[allowance]).ToString("N2")</td>
+                                        }
+                                    }
+
+                                </tr>
+                        }
+                    }
+
+                }
+
+                <!-- Add more rows for other allowances and deductions -->
+            </tbody>
+            <tfoot>
+                <tr class="bold">
+                    <td>Total Earnings</td>
+                    <td class="text-right">@pos.ToString("N2")</td>
+                    <td class="text-right">@neg.ToString("N2")</td>
+                </tr>
+            </tfoot>
+
+
+        </table>
+
+        <table class="table">
+            <tr>
+                <td>
+                    <table class="table-borderless table">
+                        <tr>
+                            <td><strong>Account Number</strong></td>
+                            <td> @Model.selected_staff[0].account_no</td>
+                            </tr>
+                        <tr>
+                            <td><strong>Bank</strong></td>
+                            <td> @Model.selected_staff[0].bank</td>
+                            </tr>
+                        <tr>
+                            <td><strong>Payment Date:</strong></td>
+                            <td> @Model.timepaid[Model.selected_staff[0].staff_id]</td>
+                            </tr>
+                        <tr>
+                            <td><strong>Reference:</strong></td>
+                            <td> @Model.reference[Model.selected_staff[0].staff_id]</td>
+                        </tr>
+
+
+                    </table>
+
+                </td>
+                <td style="padding: 0; vertical-align: top;">
+                    <table class="table-borderless table" style="width:100%;" >
+                        <tr>
+                            <th style="text-align:center;">NET SALARY</th>
+                        </tr>
+                        <tr>
+                            <td>@Model.net[Model.selected_staff[0].staff_id].ToString("N2")</td>
+                        </tr>
+                        <tr>
+                            <td>@Model.words[Model.selected_staff[0].staff_id].ToUpper()</td>
+                        </tr>
+
+                    </table>
+
+
+                </td>
+
+            </tr>
+
+        </table>
+        </div> 
+       
+
+</body>
+</html>

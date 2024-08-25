@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.PageTitle</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/styles.css">
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+    <div id="loading" class="loading" style="display: none;">
+        <img src="~/Content/img/loading.gif" alt="Loading...">
+    </div>
+    <div class="top-bar">
+        <div class="menu-icon">&#9776;</div>
+        <div class="user-icon"><i class="fas fa-user"></i></div>
+    </div>
+
+    <div class="menu-box" style="display: none;"  id="menuBox">
+        <ul>
+            <li>
+                <a href="Staff">
+                    <div>Staff</div>
+                </a>
+            </li>
+            <li>
+                <a href="Admin">
+                    <div>Admin</div>
+                </a>
+            </li>
+            <li>
+                <a href="Schedule">
+                    <div>Schedule</div>
+                </a>
+            </li>
+            <li>
+                <a href="Settings">
+                    <div>Settings</div>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="user-box" style="display: none;" id="userBox">
+        <ul>
+		<li>
+             <a href="/">
+                    <div>Log Out</div>
+                </a>
+				</li>
+        </ul>
+    </div>
+
+    <div class="container">
+
+        <div class="vertical-menu">
+            <!-- Add your menu items here -->
+        </div>
+        <div class="render">
+            @RenderBody()
+        </div>
+    </div>
+
+
+
+    <footer>
+        <div class="footer">
+            <img src="~/Content/img/lower.png" alt="Footer">
+        </div>
+    </footer>
+
+    @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            $(document).on('ajaxStart', function () {
+                // Show loading GIF or perform other actions
+                $("#loading").show();
+            });
+
+            $(document).on('ajaxStop', function () {
+                // Hide loading GIF or perform other actions
+                $("#loading").hide();
+            });
+            if (window.innerWidth > 450) {
+                menuBox.style.display =  'block' ;
+            }
+
+            // Other code and event handlers...
+        });
+        const menuIcon = document.querySelector('.menu-icon');
+        const menuBox = document.getElementById('menuBox');
+
+        const userIcon = document.querySelector('.user-icon');
+        const userBox = document.getElementById('userBox');
+
+        menuIcon.addEventListener('click', () => {
+            menuBox.style.display = menuBox.style.display === 'none' ? 'block' : 'none';
+        });
+        if (window.innerWidth <= 450) {
+            const menuItems = document.querySelectorAll('.menu-box ul li a');
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    menuBox.style.display = menuBox.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+        }
+        userIcon.addEventListener('click', () => {
+            userBox.style.display = userBox.style.display === 'none' ? 'block' : 'none';
+        });
+    </script>
+</body>
+
+</html>

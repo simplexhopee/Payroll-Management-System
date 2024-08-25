@@ -1,0 +1,62 @@
+﻿@model Checod_Africa.Models.staff
+
+<table class="smaller-table">
+    <tr>
+        <th>Staff ID:</th>
+        <td>@Model.staff_id</td>
+    </tr>
+    <tr>
+        <th>Staff Name:</th>
+        <td>@Model.staff_name</td>
+    </tr>
+    <tr>
+        <th>Phone:</th>
+        <td>@Model.phone</td>
+    </tr>
+    <tr>
+        <th>Email:</th>
+        <td>@Model.email</td>
+    </tr>
+    <tr>
+        <th>Designation:</th>
+        <td>@Model.designation</td>
+    </tr>
+    <tr>
+        <th>TIN Number:</th>
+        <td>@Model.tin</td>
+    </tr>
+    <tr>
+        <th>Account Number:</th>
+        <td>@Model.account_no</td>
+    </tr>
+    <tr>
+        <th>Bank:</th>
+        <td>@Model.bank  </td>
+    </tr>
+    <tr>
+        <th>Basic Salary:</th>
+        <td>@Model.salary.ToString("N2")</td>
+    </tr>
+    <!-- Display the list of allowances -->
+    @if (Model.allowances != null && Model.allowances.Count > 0)
+    {
+        <tr>
+            <th>Adjustments:</th>
+            <td>
+                <ul>
+                    @foreach (var allowance in Model.allowances)
+                    {
+                        <li>@allowance.Key: @(allowance.Value < 0 ? "(" + Math.Abs(allowance.Value).ToString("N2") + ")" : allowance.Value.ToString("N2"))</li>
+                    }
+                </ul>
+            </td>
+        </tr>
+    }
+</table>
+<br />
+<!-- Add Edit and Delete buttons -->
+<div style="text-align:center;">
+    <button type="button" class="main-button" onclick="editStaff('@Model.staff_id')">Edit</button>
+    
+</div>
+

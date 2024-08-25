@@ -1,0 +1,49 @@
+.horizontal-toolbar {
+    height: 50px; /* Adjust the height as desired */
+    background-color: #009846;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-radius: 5px;
+}
+.oval-divider--bottom {
+    position: absolute;
+    top: 48px;
+    margin: 8px;
+    left: 0;
+    right: 0;
+    height: 24px;
+    border-style: none;
+    background-color: #d3dd73;
+    clip-path: ellipse(50% 100% at 50% 0%);
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDBweCIgdmlld0JveD0iMCAwIDEyODAgMTQwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxnIGZpbGw9IiNmZmZmZmYiPjxwYXRoIGQ9Ik0xMjgwIDMuNEMxMDUwLjU5IDE4IDEwMTkuNCA4NC44OSA3MzQuNDIgODQuODljLTMyMCAwLTMyMC04NC4zLTY0MC04NC4zQzU5LjQuNTkgMjguMiAxLjYgMCAzLjRWMTQwaDEyODB6IiBmaWxsLW9wYWNpdHk9Ii4zIi8+PHBhdGggZD0iTTAgMjQuMzFjNDMuNDYtNS42OSA5NC41Ni05LjI1IDE1OC40Mi05LjI1IDMyMCAwIDMyMCA4OS4yNCA2NDAgODkuMjQgMjU2LjEzIDAgMzA3LjI4LTU3LjE2IDQ4MS41OC04MFYxNDBIMHoiIGZpbGwtb3BhY2l0eT0iLjUiLz48cGF0aCBkPSJNMTI4MCA1MS43NmMtMjAxIDEyLjQ5LTI0Mi40MyA1My40LTUxMy41OCA1My40LTMyMCAwLTMyMC01Ny02NDAtNTctNDguODUuMDEtOTAuMjEgMS4zNS0xMjYuNDIgMy42VjE0MGgxMjgweiIvPjwvZz48L3N2Zz4=);
+}
+.logo-container img {
+    height: 40px; /* Adjust the height as desired */
+    width: auto; /* Adjust the width as desired */
+}
+
+.vertical-menu {
+    background-color: #f8f8f8;
+    min-height: calc(100vh - 50px); /* Adjust the height based on the toolbar height */
+    width: 30%; /* Set the width to 30% of the screen */
+    padding: 20px;
+    float: left; /* Add float to align it to the left */
+}
+
+.container {
+    width: 100%; /* Set the width to 70% of the screen */
+    padding: 20px;
+    float: left; /* Add float to align it to the left */
+}
+.render {
+    width: 60%; /* Set the width to 70% of the screen */
+    padding: 20px;
+    float: left; /* Add float to align it to the left */
+}
+
+footer {
+    background-color: #f8f8f8;
+    padding: 20px;
+    clear: both; /* Clear the float property */
+}

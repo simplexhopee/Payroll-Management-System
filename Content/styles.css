@@ -1,0 +1,633 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: SF Pro Display, sans-serif;
+    background-color: white;
+}
+
+.back_green {
+   background-color: rgb(1, 150, 70);
+}
+
+.login-container {
+    display: flex;
+    height: 100vh;
+}
+
+.login-form {
+    flex: 3;
+    padding: 100px;
+    padding-top:50px;
+    color: white;
+}
+
+.login-header, .login-header {
+    font-size: 48px;
+    margin: 0;
+}
+
+.drop-down {
+    background-color: rgb(1, 150, 70);
+    width: 210px;
+    height: 40px;
+    color: white;
+    font-size: 18px;
+    border-color: rgb(1,150,70);
+    border-radius: 7px;
+    padding-left: 10px;
+}
+    .drop-down option:hover {
+        background-color: white;
+        color: rgb(1,150,70);
+    }
+h1 {
+    margin: 0;
+    font-size: 48px;
+}
+h2 {
+    color: rgb(1,150,70);
+    font-weight: bold;
+    font-size: 35px;
+}
+.smaller-table {
+    font: inherit;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    width: 100%;
+}
+    .smaller-table td, .smaller-table th {
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgb(1,150,70);
+    }
+.table-staff {
+    font: inherit;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    width: 100%;
+}
+    .table-staff th, .table-staff td {
+        border-bottom: 1px solid rgb(147, 154, 164);
+        padding-bottom: 20px;
+    }
+    .table-staff th {
+        color: #68696b;
+    }
+.dark-body  {
+    color: #68696b;
+	 border-bottom: 1px solid rgb(147, 154, 164);
+}
+
+.light-head  {
+    color: rgb(147, 154, 164);
+	 border-bottom: 1px solid rgb(147, 154, 164);
+}
+.table-styled {
+    font: inherit;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    width: 100%;
+}
+
+/* Header styles */
+    .table-styled thead th  {
+        border-bottom: 1px solid black; /* Only bottom border */
+        color: black;
+    }
+
+/* Footer styles */
+    .table-styled tfoot th  {
+        border-top: 1px solid black; /* Only top border */
+        color: black;
+    }
+
+/* Body text color */
+    .table-styled tbody {
+        color: rgb(147, 154, 164);
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    /* Selected row styles */
+    .table-styled tbody tr.selected td:not(:first-child):not(:last-child) {
+        background-color: rgb(1,150,70);
+        color: white;
+    }
+
+/* Remove all borders from table */
+.table-styled table, th, td {
+    border: none;
+}
+
+/* Add a bit of padding to cells */
+.table-styled th, td {
+    padding: 5px;
+}
+    .table-styled tbody tr + tr {
+        margin-top: 10px; /* Adjust the margin as needed */
+    }
+.menu-box ul li a {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit text color from parent */
+}
+.user-box ul li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.login-text {
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+.modal-content {
+    background-color: #f5fff7;
+   
+}
+.modal-dialog {
+    
+}
+.render {
+    margin-top: 50px;
+    position: absolute;
+    bottom: 40px;
+    overflow:scroll;
+    top: 23px;
+    left: 250px;
+    width: 80%;
+	padding: 15px;
+}
+.input-group {
+    margin-bottom: 20px;
+    
+    height: 45px;
+   
+    border: none;
+    
+  
+}
+.modal-input {
+    background-color: transparent;
+    width:371px;
+    font-size: inherit;
+}
+
+.modal-header .close {
+    background-color: rgb(1, 150, 70);
+    border-radius: 38px;
+    width: 20px;
+}
+    label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+select {
+    padding: 6px;
+    
+    border-radius: 5px;
+    color: rgb(133, 133, 133);
+}
+
+input[type="text"], input[type="password"] {
+    padding: 10px;
+    width: 371px;
+    border-radius: 5px;
+    color: rgb(133, 133, 133);
+}
+.green-input {
+    border: 1px solid rgb(1, 150, 70);
+    height: 35px;
+    
+}
+::-webkit-scrollbar {
+    
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+   
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+   
+}
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+.login-button {
+    background-color: white;
+    color: rgb(1, 150, 70);
+    font-weight: bold;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+    .login-button:disabled {
+        background-color: #ddd; /* Grayed out background */
+        color: #888; /* Dimmed text color */
+        cursor: not-allowed; /* Show "not allowed" cursor */
+        box-shadow: none; /* Remove shadow */
+    }
+.alert-message {
+    display: none;
+    padding: 10px;
+    margin: 10px 0;
+    width: 390px;
+    background-color: #ffeeee; /* Light pink background */
+    color: #f00; /* Red text color */
+    border-radius: 4px;
+    font-size: 14px;
+}
+.main-button {
+    background-color: rgb(1, 150, 70);
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+.in-button-success {
+    background-color: #057857;
+    color: white;
+    font-weight: normal;
+    font-size: 12px;
+    border: none;
+    border-radius: 3px;
+    padding: 8px 9px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+.in-button-failure {
+    background-color: #fd3333;
+    color: white;
+    font-weight: normal;
+    font-size: 12px;
+    border: none;
+    border-radius: 3px;
+    padding: 8px 9px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+
+    .login-button:hover {
+        background-color: #e0e0e0;
+    }
+
+.image-container {
+    flex: 1;
+    background-image: url('../../Content/img/Frame 1.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 10px;
+}
+.container-checkbox {
+    display: block;
+    position: relative;
+    padding-left: 10px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    .container-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+        padding: 5px;
+    }
+
+.checkmark {
+    position: absolute;
+    top: 6px;
+    left: 0;
+    transform: translateY(-50%);
+    height: 20px;
+    width: 20px;
+    border-color: rgb(147, 154, 164);
+    border-style: solid;
+    border-width:2px;
+    background-color: white;
+    border-radius: 4px;
+}
+
+.container-checkbox:hover input ~ .checkmark {
+    background-color: rgb(1,150,70);
+    border-color: rgb(1,150,70);
+}
+
+.container-checkbox input:checked ~ .checkmark {
+    background-color: rgb(1,150,70);
+    border-color: rgb(1,150,70);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.container-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.container-checkbox .checkmark:after {
+    left: 7px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+.pull_forward {
+    padding-left: 30px;
+}
+/* Style for the loading element */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Make sure it's on top of other elements */
+}
+
+    /* Style for the loading image */
+    .loading img {
+        width: 50px; /* Adjust size as needed */
+        height: 50px;
+    }
+.top-bar {
+    height: 60px;
+    background-color: rgb(1, 150, 70);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    color: white;
+}
+
+.menu-icon,
+.user-icon {
+    cursor: pointer;
+    font-size: 30px;
+    color: white;
+    background-color: transparent;
+}
+
+.menu-box {
+    position: absolute;
+    top: 69px;
+    left: 10px;
+    width: 200px;
+    background-color: white;
+    border: 3px solid rgb(1, 150, 70);
+    border-radius: 30px;
+    display: block;
+    padding: 0;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    height: 90%;
+    font-size: 18px;
+    padding-top: 49px;
+}
+    .menu-box ul {
+        list-style: none;
+        padding: 0;
+    }
+
+        .menu-box ul li {
+            margin: 10px 0;
+            cursor: pointer;
+            padding-left: 30px;
+            transition: background-color 0.3s ease; /* Add smooth transition */
+        }
+
+            .menu-box ul li:hover,
+            .menu-box ul li.selected {
+                background-color: rgb(1, 150, 70);
+                color: white; /* Adjust text color for visibility */
+            }
+            
+
+.user-box {
+   position: absolute;
+    top: 68px;
+    right: 2px;
+    width: 136px;
+    background-color: white;
+    border: 3px solid rgb(1, 150, 70);
+    border-radius: 10px;
+    display: none;
+    padding: 10px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    font-size: 18px;
+    padding-left: 15px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.modal-confirm {
+    color: #636363;
+    width: 400px;
+}
+
+    .modal-confirm .modal-content {
+        padding: 20px;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .modal-confirm .modal-header {
+        border-bottom: none;
+        position: relative;
+    }
+
+    .modal-confirm h4 {
+        text-align: center;
+        font-size: 26px;
+        margin: 30px 0 -10px;
+    }
+
+    .modal-confirm .close {
+        position: absolute;
+        top: -5px;
+        right: -2px;
+    }
+
+    .modal-confirm .modal-body {
+        color: #999;
+    }
+
+    .modal-confirm .modal-footer {
+        border: none;
+        text-align: center;
+        border-radius: 5px;
+        font-size: 13px;
+        padding: 10px 15px 25px;
+    }
+
+        .modal-confirm .modal-footer a {
+            color: #999;
+        }
+
+    .modal-confirm .icon-box {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        border-radius: 50%;
+        z-index: 9;
+        text-align: center;
+        border: 3px solid #f15e5e;
+    }
+
+        .modal-confirm .icon-box i {
+            color: #f15e5e;
+            font-size: 46px;
+            display: inline-block;
+            margin-top: 13px;
+        }
+
+    .modal-confirm .btn,
+    .modal-confirm .btn:active {
+        color: #fff;
+        border-radius: 4px;
+        background: #60c7c1;
+        text-decoration: none;
+        transition: all 0.4s;
+        line-height: normal;
+        min-width: 120px;
+        border: none;
+        min-height: 40px;
+        border-radius: 3px;
+        margin: 0 5px;
+    }
+
+    .modal-confirm .btn-secondary {
+        background: #c1c1c1;
+    }
+
+        .modal-confirm .btn-secondary:hover,
+        .modal-confirm .btn-secondary:focus {
+            background: #a8a8a8;
+        }
+
+    .modal-confirm .btn-danger {
+        background: #f15e5e;
+    }
+
+        .modal-confirm .btn-danger:hover,
+        .modal-confirm .btn-danger:focus {
+            background: #ee3535;
+        }
+.create-modal {
+    width: 70%;
+    height: 700px;
+}
+.schedule-check {
+    top:9px;
+}
+.schedule-label {
+    font-size: 13px;
+    font-weight: normal;
+    text-align: left;
+    margin: 15px;
+}
+.hidden {
+    display: none; /* Add this class */
+}
+@media (max-width: 450px) {
+    .login-form {
+        padding: 30px; /* You can adjust this value based on your design */
+    }
+
+    input[type="text"], input[type="password"], select {
+        width: 95%;
+    }
+
+    .modal-input {
+        width: 95%;
+    }
+
+    .alert-message {
+        width: 80%;
+    }
+
+    .render {
+        left: 0;
+        width: 100%;
+        margin: 5px;
+        margin-top: 50px;
+		
+    }
+
+    .create-modal {
+        width: 90%;
+    }
+
+    .modal-dialog {
+      
+    width: 90%;
+
+    }
+    .alert {
+        width: 80%;
+    }
+    .menu-box {
+        position: fixed;
+        top: 65px;
+        left: 5px;
+        width: 60%;
+        height: 90%;
+        z-index: 9999;
+        display: block;
+        background-color: rgb(1, 150, 70);
+		
+    }
+
+        .menu-box ul {
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            color: white;
+            font-size: 24px;
+            transform: translate(-50%, -50%);
+        }
+    }

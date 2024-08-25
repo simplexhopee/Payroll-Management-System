@@ -1,0 +1,52 @@
+﻿@model Checod_Africa.Models.schedule
+
+@{
+    string id = Model.reference[Model.selected_staff[0].staff_id].ToString();
+
+}
+<div class="modal-dialog modal-confirm">
+    <div class="modal-content">
+        <div class="modal-header flex-column">
+
+            <h4 class="modal-title w-100">Payment Details</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="smaller-table">
+
+
+                <tr>
+                    <td>Payment Reference</td>
+                    <td>@Model.reference[Model.selected_staff[0].staff_id]</td>
+
+                </tr>
+                <tr>
+                    <td>Payment Date</td>
+                    <td>@Model.timepaid[Model.selected_staff[0].staff_id] </td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>
+                        @{
+                            if (Model.status[Model.selected_staff[0].staff_id] == "success")
+                            {
+                                <div style="color:green;">success</div>
+                            }
+
+                            else
+                            {
+                                <div style="color:red;">Model.status[Model.selected_staff[0].staff_id]</div>
+                            }
+
+                        }
+
+                    </td>
+
+                </tr>
+            </table>
+            <button type="button" class="main-button" onclick="window.location.href = 'https://checod.digitalschooltech.com/schedule?sno=' + @id">View Payslip</button>
+            <button type="button" class="main-button" onclick="Send_Email('@Model.selected_staff[0].staff_id')">Send Email</button>
+        </div>
+
+    </div>
+</div>

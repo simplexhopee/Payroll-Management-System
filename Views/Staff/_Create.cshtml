@@ -1,0 +1,296 @@
+﻿@model Checod_Africa.Models.staff
+
+
+@using (Html.BeginForm("CreatePopup", "Staff", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+<div class="col-lg-6">
+    <div class="form-group">
+        @Html.Label("Staff ID")
+
+        @Html.EditorFor(model => model.staff_id, new { htmlAttributes = new { @class = "modal-input green-input" } })
+        @Html.ValidationMessageFor(model => model.staff_id, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Name")
+
+        @Html.EditorFor(model => model.staff_name, new { htmlAttributes = new { @class = "modal-input green-input" } })
+        @Html.ValidationMessageFor(model => model.staff_name, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.Label("Phone Number")
+
+        @Html.EditorFor(model => model.phone, new { htmlAttributes = new { @class = "modal-input green-input" } })
+        @Html.ValidationMessageFor(model => model.phone, "", new { @class = "text-danger" })
+
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+
+        @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "modal-input green-input" } })
+        @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+
+    </div>
+    <div class="form-group">
+        <label>Designation</label>
+
+        @Html.EditorFor(model => model.designation, new { htmlAttributes = new { @class = "modal-input green-input" } })
+        @Html.ValidationMessageFor(model => model.designation, "", new { @class = "text-danger" })
+
+    </div>
+    
+    <div class="form-group">
+        @Html.Label("Account Number")
+
+        @Html.EditorFor(model => model.account_no, new { htmlAttributes = new { @class = "modal-input green-input" } })
+        @Html.ValidationMessageFor(model => model.account_no, "", new { @class = "text-danger" })
+
+    </div>
+    <div class="form-group">
+        <label>Bank</label>
+
+
+        @Html.DropDownList("bank", ViewBag.Banks as SelectList, "Select Bank", new { @class = "modal-input green-input" })
+        <div id="accountAlert" class="alert alert-info mt-2" style="display: none; width:371px;"></div>
+
+
+    </div>
+    <div class="form-group">
+
+
+        <label class="container-checkbox">
+
+            <input type="checkbox" name="isadmin" id="isadmin" />
+
+            <span class="checkmark" style="top:9px;"></span> <label style="font-size:14px;margin: 15px;">Make Admin</label>
+        </label>
+
+    </div>
+</div>
+<div class="col-lg-6">
+    <div class="form-group">
+        @Html.Label("TIN Number")
+
+        @Html.EditorFor(model => model.tin, new { htmlAttributes = new { @class = "modal-input green-input" } })
+        @Html.ValidationMessageFor(model => model.tin, "", new { @class = "text-danger" })
+
+    </div>
+    <div class="form-group">
+        <label>Salary</label>
+        @{
+            // Determine the initial salary value, ensuring it's not 0
+            double initialSalary = Model.salary == 0 ? 0 : Model.salary;
+        }
+        @Html.EditorFor(model => model.salary, new { htmlAttributes = new { @class = "modal-input green-input", @oninput = "formatNumber(this)", @value = initialSalary.ToString() } })
+
+
+        @Html.ValidationMessageFor(model => model.salary, "", new { @class = "text-danger" })
+
+    </div>
+
+</div>
+    <br />
+    <label class="control-label">Adjustments:</label>
+    <br />
+
+    <button type="button" class="in-button-success " onclick="addAllowanceRow()">Add Allowance</button>
+    <br />
+    <br />
+    <div id="allowancesContainer">
+        @if (Model.staff_id != null)
+        {
+            foreach (string key in Model.allowances.Keys)
+            {
+                <div class="form-group">
+                    <div class="allowanceRow">
+                        <select name="allowances[${allowanceIndex}].Name" class="modal-input green-input  allowance-name">
+                            <option value="Select Allowance">Select Adjustment</option>
+                            @foreach (string allkey in Model.allsettings.allowances.Keys)
+                            {
+                                string selected = key == allkey ? "selected" : "";
+                                <option @selected value="@allkey">@allkey </option>
+                            }
+                        </select>
+                        <button type="button" class="in-button-failure " onclick="removeAllowanceRow(this)">Remove</button>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+
+    @Html.Hidden("selectedAllowances", "", new { id = "selectedAllowances" })
+
+    <br />
+    
+        <button type="submit" class="main-button ">Save</button>
+    
+}
+
+<div id="successSaved" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header flex-column">
+                <div class="icon-box" style="border: 3px solid green;">
+                    <i style="color:green;" class="material-icons">&#xE876;</i>
+                </div>
+                <h4 class="modal-title w-100">Success</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Staff Saved Successfully</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var allowanceIndex = 0;
+    var allSettings = @Html.Raw(Json.Encode(Model.allsettings.allowances.Keys )); // Convert to JavaScript object
+
+
+
+    $(document).ready(function () {
+        $(document).on('ajaxStart', function () {
+            // Show loading GIF or perform other actions
+            $("#loading").show();
+        });
+
+        $(document).on('ajaxStop', function () {
+            // Hide loading GIF or perform other actions
+            $("#loading").hide();
+        });
+
+    $("#bank").on("change", function () {
+
+        var selectedBankCode = $(this).val();
+        var accountNumber = $("#account_no").val();
+
+        $.ajax({
+            url: "@Url.Action("ResolveBankAccount", "Staff")",
+            type: "POST",
+            data: {
+                bankCode: selectedBankCode,
+                accountNumber: accountNumber
+            },
+            dataType: "json",
+            success: function(status) {
+                // Handle the success response
+                $("#accountAlert").text(status.message).show();
+            },
+            error: function(xhr, status, error) {
+                // Handle the error response
+                console.error("Error:", error);
+            }
+        });
+    });
+});
+
+
+
+            function addAllowanceRow() {
+                var initial = ``
+        var container = $("#allowancesContainer");
+                var newRow = `<div class="form-group"><div class="allowanceRow">
+    <select name="allowances[${allowanceIndex}].Name" class="modal-input green-input  allowance-name">
+        `;
+        newRow += `
+        <option value="Select Allowance">Select Adjustment</option>`;
+
+        // Loop through all settings to create options for the select box
+        for (var key in allSettings) {
+        newRow += `
+        <option value="${key}">${allSettings[key]}</option>`;
+        }
+
+        newRow += `
+    </select> <button type="button" class="in-button-failure" onclick="removeAllowanceRow(this)">Remove</button></div></div>`
+
+    container.append(newRow);
+    allowanceIndex++;
+    }
+
+    function removeAllowanceRow(button) {
+    $(button).closest(".allowanceRow").remove();
+    }
+
+
+    // Function to update the hidden field with selected allowances before submitting the form
+    function updateSelectedAllowances() {
+        // Your logic to update selected allowances here
+        updateAll();
+        
+        // Assume the AJAX request updates the allowances
+        var yourData = {
+            staff_id: $("#staff_id").val(),
+            staff_name: $("#staff_name").val(),
+            phone: $("#phone").val(),
+            email: $("#email").val(),
+            designation: $("#designation").val(),
+            salary: $("#salary").val(),
+            tin: $("#tin").val(),
+            account_no: $("#account_no").val(),
+            bank: $("#bank").val(),
+            isadmin: $("#isadmin").prop("checked"),
+            selectedAllowances: $("#selectedAllowances").val() // Assuming you have a function to collect allowances data
+        };
+        $.ajax({
+            type: "POST",
+            url: "/Staff/CreatePopup",
+            data: yourData,
+            dataType: "json",
+            success: function (response) {
+                if (response.status === true) {
+
+                    $("#detailsModal").modal('hide');
+
+
+                    refresh();
+
+
+                } else {
+                    // Handle false return from JSON response (error)
+                    alert(response.message);
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                // Handle AJAX error
+
+            }
+        });
+    }
+    function updateAll() {
+        var selectedAllowances = [];
+        $(".allowance-name").each(function () {
+            var selectedValue = $(this).find('option:selected').text();
+            if (selectedValue !== "Select Allowance") {
+                selectedAllowances.push(selectedValue);
+            }
+
+        });
+
+        // Convert the selected allowances array to a comma-separated string
+        var selectedAllowancesString = selectedAllowances.join(",");
+
+        // Set the value of the hidden field with the selected allowances
+        $("#selectedAllowances").val(selectedAllowancesString);
+    }
+
+    // Attach a form submit event handler
+    $("form").on("submit", function (event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Update the hidden field with selected allowances before submitting the form
+        updateSelectedAllowances();
+    });
+
+</script>
+
+
+

@@ -1,0 +1,196 @@
+﻿@{
+    Layout = null; // No layout for this page
+    ViewBag.Title = "Login";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/Content/bootstrap.css">
+    <link rel="stylesheet" href="~/Content/styles.css">
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    
+    <title>Login Page</title>
+
+</head>
+<body class="back_green ">
+    <div class="login-container">
+        <div class="login-form">
+            <img src="~/Content/img/logo.png" alt="Logo" height="147" width="364">
+            <div class="pull_forward ">
+                <div class="login-header"><h1>Login</h1></div>
+                <div class="login-text">Sign in to continue</div>
+                
+                    <label for="username">Username</label>
+                    <input class="input-group" type="text" id="username" placeholder="Enter your username">
+                
+               
+                    <label for="password">Password</label>
+                    <input class="input-group" type="password" id="password" placeholder="Enter your password">
+                
+                <br />
+                <button type="button" class="login-button" id="loginButton" onclick="login()">Login</button>
+                <div id="alertMessage" class="alert-message" style="display: none;"></div>
+
+                <div class="footer">
+                    <img src="~/Content/img/CHECOD AFRICA.png" alt="Footer">
+                </div>
+            </div>
+        </div>
+        <div class="image-container"></div>
+    </div>
+    <div id="detailsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 class="modal-title" id="detailsModalLabel"></h3>
+                </div>
+                <div class="modal-body">
+
+                    @using (Html.BeginForm("Save", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="input-group">
+                            <label for="password1">Enter Password</label>
+                            <input type="password" class="modal-input green-input" id="password1" placeholder="Enter your new password">
+                        </div>
+                        <div class="input-group">
+                            <label for="password2">Re-Enter Password</label>
+                            <input type="password" class="modal-input green-input" id="password2" placeholder="Re-enter your new password">
+                        </div>
+                        <button type="button" id="changeButton" onclick="changePassword()" class="main-button">Save</button>
+                        <div id="alertMessage2" class="alert-message" style="display: none;"></div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="successSaved" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header flex-column">
+                    <div class="icon-box" style="border: 3px solid green;">
+                        <i style="color:green;" class="material-icons">&#xE876;</i>
+                    </div>
+                    <h4 class="modal-title w-100">Success</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Password Changed Successfully</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script>
+
+            function changePassword() {
+                var loginButton = document.getElementById("changeButton");
+
+                // Disable the login button
+                loginButton.disabled = true;
+                var yourData = {
+                password1: $("#password1").val(),
+                password2: $("#password2").val(),
+                 };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Change", "Home")',
+                data: yourData,
+                dataType: "json",
+                success: function (response) {
+                    if (response.message == "success") {
+
+
+                        $('#detailsModal').modal('hide');
+
+                        $('#successSaved').modal('show');
+
+
+                    }
+
+                    else {
+                        // Handle false return from JSON response (error)
+                        alertMessage2.innerText = response.message;
+                        alertMessage2.style.display = "block";
+                        loginButton.disabled = false;
+                        $("#password1").val("");
+                        $("#password2").val("");
+
+                       
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // Handle AJAX error
+
+                }
+            });
+            }
+
+
+            function login()
+            {
+                var loginButton = document.getElementById("loginButton");
+
+                // Disable the login button
+                loginButton.disabled = true;
+            // Assume the AJAX request updates the allowances
+            var yourData = {
+                username: $("#username").val(),
+                password: $("#password").val(),
+                 };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Login", "Home")',
+                data: yourData,
+                dataType: "json",
+                success: function (response) {
+                    if (response.message == "success") {
+
+
+                        window.location.href = "/Staff"
+
+
+                    }
+                    else if (response.message == "change") {
+                        $("#password").val("");
+                        loginButton.disabled = false;
+                        $('#detailsModalLabel').html("Change Password");
+                        $('#detailsModal').modal('show');
+                    }
+
+                    else {
+                        // Handle false return from JSON response (error)
+                        alertMessage.innerText = "Incorrect username or password.";
+                        alertMessage.style.display = "block";
+                        $("#password").val("");
+                        loginButton.disabled = false;
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // Handle AJAX error
+
+                }
+            });
+    }
+
+        </script>
+  
+</body>
+</html >

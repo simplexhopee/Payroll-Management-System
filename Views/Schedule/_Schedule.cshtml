@@ -1,0 +1,377 @@
+﻿@model Checod_Africa.Models.schedule
+<h2>Schedule for @Model.month @Model.year</h2>
+<div class="row">
+    <div class="col-lg-10">
+        @{
+
+            if (Model.selected_staff != null && Model.selected_staff.Count > 0)
+            {
+
+                List<string>
+                    staffs = new List<string>
+                        ();
+                foreach (var s in Model.selected_staff)
+                {
+                    staffs.Add(s.staff_id);
+
+
+                }
+
+
+
+                using (Html.BeginForm("Payroll", "Schedule", FormMethod.Post))
+                {
+
+
+                    <table class="table-styled">
+                        <thead>
+                            <tr>
+                                <td></td>
+                                <th>Staff ID</th>
+                                <th>Staff Name</th>
+                                <th>Salary</th>
+                                @foreach (string allowance in Model.allsettings.allowances.Keys)
+                                {
+                                    <th>@allowance</th>
+                                }
+                                <th>Net Salary</th>
+                                <td></td>
+
+                            </tr>
+                        </thead>
+                        @foreach (Checod_Africa.Models.staff staff in Model.all_staff)
+                        {
+                            Checod_Africa.Models.staff selected_staff = new Checod_Africa.Models.staff();
+                            foreach (var s in Model.selected_staff)
+                            {
+                                if (s.staff_id == staff.staff_id)
+                                {
+                                    selected_staff = s;
+                                }
+
+                            }
+
+                            <tr id="@staff.staff_id" @(staffs.Contains(staff.staff_id) ? "class = selected" : "")>
+                                <td>
+                                    @{ if (Model.paid == false)
+                                        {
+                                            <label class="container-checkbox">
+
+                                                <input type="checkbox" id="checkbox-@staff.staff_id" @(staffs.Contains(staff.staff_id) ? "checked" : "unchecked") data-staff-id="@staff.staff_id" onchange="onCheckboxChange(this)" />
+
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        }
+                                    }
+                                    <!-- Add the checkbox for each staff -->
+
+                                </td>
+                                <td>@staff.staff_id</td>
+                                <td>@staff.staff_name</td>
+                                <td>@(staffs.Contains(staff.staff_id) ? selected_staff.salary.ToString("N2") : staff.salary.ToString("N2"))</td>
+                                @foreach (var allowance in Model.allsettings.allowances.Keys)
+                                {
+                                    if (staff.allowances.ContainsKey(allowance))
+                                    {
+                                        <td>@(staffs.Contains(staff.staff_id) ?  (selected_staff.allowances[allowance] < 0 ? "(" + Math.Abs(selected_staff.allowances[allowance]).ToString("N2") + ")" : selected_staff.allowances[allowance].ToString("N2")) :  (staff.allowances[allowance] < 0 ? "(" + Math.Abs(staff.allowances[allowance]).ToString("N2") + ")" : staff.allowances[allowance].ToString("N2")) )</td>
+                                    }
+                                    else
+                                    {
+                                        <td>0.00</td>
+                                    }
+
+                                }
+                                <td>@(staffs.Contains(staff.staff_id) ? Model.net[staff.staff_id].ToString("N2") : staff.net.ToString("N2"))</td>
+                                @{ if (Model.paid == false)
+                                    {
+                                        <td style="background:none;">
+                                            <button type="button" class="in-button-success " onclick="openEditPopup('@staff.staff_id')">Edit</button>
+                                        </td>
+                                    }
+                                    else if (staffs.Contains(staff.staff_id))
+                                    {
+                                        <td style="background:none;">
+                                            <button type="button" class="in-button-success" onclick="comfirm('@staff.staff_id')">Payment Info</button>
+                                        </td>
+                                    }
+                                }
+
+                                <td></td>
+                            </tr>
+                        }
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <th>Total</th>
+                                <th></th>
+                                <th>@Model.gtotal_salary.ToString("N2")</th>
+                                @foreach (string allowance in Model.allsettings.allowances.Keys)
+                                {
+                                    <th>@(Model.totals[allowance] < 0 ? "(" + Math.Abs(Model.totals[allowance]).ToString("N2") + ")" :  Model.totals[allowance].ToString("N2"))</th>
+                                }
+                                <th>@Model.gtotal_net.ToString("N2")</th>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                if (Model.paid == false)
+                {
+                    <input type="button" id="refresh" value="Refresh" class="main-button" onclick="Refresh_Schedule()" />
+                }
+
+                if (Model.paid == true)
+                {
+                    <input type="button" id="reemail" value="Re-email" class="main-button" onclick="Resend_Mail()" />
+                }
+
+                <!-- Use onSubmitForm() function to submit the form -->
+                <input type="button" id="Payroll" value="View Payroll" class="main-button" data-toggle="modal" data-target="#scheduleModal" />
+
+
+            }
+        }
+    </div>
+    <div class="col-lg-2">
+        <p> 0000550685</p>
+        <p> CHECOD AFRICA LIMITED</p>
+        <p>TITAN BANK</p>
+        <h3><strong>Balance (NGN) </strong></h3>
+        <h2> @Model.balance.ToString("N2")</h2>
+
+        <p id="pPaid"><strong>Status:</strong> @(Model.paid ? "Paid" : "Unpaid")</p>
+
+        @{
+            if (Model.paid == false)
+            {
+
+                <!-- Use onSubmitForm() function to submit the form -->
+                <input type="button" id="Pay" value="Pay Salary" class="main-button" data-toggle="modal" href="#comfirmModal" />
+
+            }
+        }
+
+    </div>
+</div>
+<div id="comfirmPayment" class="modal fade">
+   
+</div>
+
+<div id="comfirmModal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header flex-column">
+                
+                <h4 class="modal-title w-100">Comfirm Payment</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="smaller-table" style="text-align: left;">
+
+                    <tr>
+                        <th>Item</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Net Salary</td>
+                        <td>@Model.gtotal_net.ToString("N2")</td>
+
+                    </tr>
+                    <tr>
+                        <td>Transaction Charges</td>
+                        <td>@((Model.gtotal_net * 0.0025).ToString("N2")) </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td><strong>@((Model.gtotal_net + (Model.gtotal_net * 0.0025)).ToString("N2"))</strong></td>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="in-button-failure" data-dismiss="modal">Cancel</button>
+                <button type="button" class="in-button-success" onclick="onSubmitForm()">Pay Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="scheduleModal" class="modal fade">
+    <div class="modal-dialog modal-confirm" style="width:500px;">
+        <div class="modal-content">
+            <div class="modal-header flex-column">
+                
+                <h4 class="modal-title w-100">Customize Schedule</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Staff ID -->
+                <div class="col-lg-6">
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="cstaff_id" name="cstaff_id" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Staff ID
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="cstaff_name" name="cstaff_name" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Staff Name
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="cphone" name="cphone" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Phone
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="cemail" name="cemail" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Email
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="ctin" name="ctin" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                TIN Number
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="cdesignation" name="cdesignation" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Designation
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="csalary" name="csalary" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Salary
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="caccount_no" name="caccount_no" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Account Number
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="container-checkbox">
+                            <input type="checkbox" class="form-check-input" id="cbank" name="cbank" checked>
+                            <span class="schedule-check checkmark"></span>
+                            <label class="schedule-label">
+                                Bank
+                            </label>
+                        </label>
+                    </div>
+
+                    <button type="button" class="in-button-failure" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="in-button-success" onclick="sendCheckedFields()">View</button>
+
+                </div>
+
+                    <div class="col-lg-6">
+
+
+
+
+
+                        @foreach (var allowance in Model.allsettings.allowances.Keys)
+                        {
+                            <div class="form-check">
+                                <label class="container-checkbox">
+                                    <input type="checkbox" class="form-check-input" id="@allowance" name="allowan" checked>
+                                    <span class="schedule-check checkmark"></span>
+                                    <label class="schedule-label">
+                                        @allowance
+                                    </label>
+                                </label>
+                            </div>
+
+                        }
+                        <div class="form-check">
+                            <label class="container-checkbox">
+                                <input type="checkbox" class="form-check-input" id="cnet" name="cnet" checked>
+                                <span class="schedule-check checkmark"></span>
+                                <label class="schedule-label">
+                                    Net
+                                </label>
+                            </label>
+                        </div>
+
+
+
+
+                    </div>
+
+                    <div class="modal-footer justify-content-center row">
+                      
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+<script>
+function sendCheckedFields() {
+                    var checkedFields = {};
+                    checkedFields["month"] = $('#selectedMonth').val();
+                    checkedFields["year"] = $('#selectedYear').val();
+                    // Iterate through all the checkboxes and store their checked status in the checkedFields object
+                    $("input[type='checkbox']").each(function () {
+                        var fieldName = $(this).attr("id");
+                        var isChecked = $(this).prop("checked");
+                        checkedFields[fieldName] = isChecked;
+                    });
+
+                    // Send the data to the controller using AJAX
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Payroll", "Schedule")', // Replace with your actual controller and action names
+                        data: checkedFields,
+                        success: function (response) {
+                        if (response.status == true) {
+                        window.location.href = "/Schedule/View_Payroll";
+                        }
+                        // Handle success response from the controller if needed
+                        },
+                        error: function (xhr, status, error) {
+                        // Handle error if AJAX request fails
+                        console.error(error);
+                        }
+                        });
+                        }
+                                           
+    </script>
